@@ -6,7 +6,6 @@ public class UserInput : MonoBehaviour
 {
 	private Player player;
 	public Squad holdSquad;
-	Object.Squad = new Squad();
 	public Vector3 hitPoint;
 
 	// Use this for initialization
@@ -143,41 +142,107 @@ public class UserInput : MonoBehaviour
 	// the function needs work done
 	private void LeftMouseClick() 
 	{
+		//If the Mouse is in bounds, actually do something
+		if (player.hud.MouseInBounds ()) 
+		{
+			// Save whatever you clicked on to hitObject using the FindHitObject function
+			GameObject hitObject = FindHitObject ();
+
+			// Find where the mouse click was using FindHitPoint function
+			hitPoint = FindHitPoint ();
+
+			Debug.Log( hitObject.name );
+
+			//If you hit an object in a valid position
+			if(hitObject && hitPoint != ResourceManager.InvalidPosition) 
+			{
+				//If you already have something selected
+				if(player.SelectedObject) 
+				{
+					Debug.Log( player.SelectedObject.name );
+
+					//If the player has a unit selected
+					if(player.SelectedObject.tag == "Unit")
+					{
+						Debug.Log( "0" );
+						holdSquad = ResourceManager.GetUnit (player.SelectedObject.name).squad; // fixed it bby sort of
+						Debug.Log( "before" );
+						player.SelectedObject.MouseClickSquad(holdSquad, hitPoint, player);//CURRENT PROBLEM, doesnt run the function
+						Debug.Log( "after" );
+					}
+					//If the player doesnt have a unit selected, proceed as normal
+					//Each class can write an override function for MouseClick
+					else
+					{
+						Debug.Log( "Other Way" );
+						player.SelectedObject.MouseClick(hitObject, hitPoint, player);
+					}
+				}
+				//If you dont have anything selected and you didnt click on the ground
+				else if(hitObject.name != "Ground") 
+				{
+					//Set worldObject to whatever you clicked on
+					WorldObject worldObject = hitObject.transform.parent.GetComponent<WorldObject>();
+					//If you actually clicked on something
+					if(worldObject) 
+					{
+						//we already know the player has no selected object
+						//So we set whatever they clicked on to thier selected object
+						player.SelectedObject = worldObject;
+						//Set it so the game knows they have something selected
+						worldObject.SetSelection(true, player.hud.GetPlayingArea());
+					}
+				}
+			}
+		}
+
+
+		//Keeping around Just in Case, although this was a complete mess that didnt come close to working
+		/*
 		Debug.Log ("test 1");
 		if (player.hud.MouseInBounds ()) 
 		{
 			//if the mouse click is in bounds
 			GameObject hitObject = FindHitObject ();  //assigns hit object by calling the FindHitObject funcion
-
+			Debug.Log (hitObject.name);
 			hitPoint = FindHitPoint (); //set vector3 hitpoint by calling the FindHitPoint function
 			Debug.Log ("test 2");
 
-			// This started working randomly
-			if (hitObject.transform.parent.tag == "Unit") // if the hit object is a unit, need to make sure it is calling the unit and not a child of the unit
+			// This causes an error if you click the ground b/c ground doesnt have a parent
+			if(hitObject.tag != "Ground")
 			{
-				Debug.Log ("test 3");
-				holdSquad = ResourceManager.GetUnit (hitObject.name).squad; // THIS LINE IS SHOOTING OUT AN ERROR (not set to an instance of an object)
-
-				if (hitObject && hitPoint != ResourceManager.InvalidPosition) 
+				if (hitObject.transform.parent.tag == "Unit") // if the hit object is a unit, need to make sure it is calling the unit and not a child of the unit
 				{
-					Debug.Log ("test 4");
-					if (player.SelectedObject) //not exactly sure what this does, if you figure out change this comment to the answer
-						// MAKE A FUNCTION OVVERIDE FOR MOUSE CLICK
-						// made another function called MouseClickSquad that can be found in Squad.cs
+					Debug.Log ("test 3");
+					holdSquad = ResourceManager.GetUnit (hitObject.transform.parent.name).squad; // fixed it bby
+
+					if (hitObject && hitPoint != ResourceManager.InvalidPosition) 
 					{
-						Debug.Log ("test 5");
-						player.SelectedObject.MouseClickSquad (holdSquad, hitPoint, player);
-					}
-					else
-					{
-						if (hitObject.tag != "Ground") // should work as the ground doesnt have child problems
+						Debug.Log ("test 4");
+						if (player.SelectedObject)
 						{
-							WorldObject worldObject = holdSquad.transform.parent.GetComponent< WorldObject > ();
-							if (worldObject) 
+							//not exactly sure what this does, if you figure out change this comment to the answer
+							// MAKE A FUNCTION OVVERIDE FOR MOUSE CLICK
+							// made another function called MouseClickSquad that can be found in Squad.cs
+							Debug.Log ("test 5");
+							player.SelectedObject.MouseClick (hitObject, hitPoint, player);
+						}
+						else
+						{
+							Debug.Log ("test 6");
+							if (hitObject.tag != "Ground")
 							{
-								//we already know the player has no selected object
-								player.SelectedObject = worldObject;
-								worldObject.SetSelection (true, player.hud.GetPlayingArea ());
+								Debug.Log ("test 7");
+								WorldObject worldObject = hitObject.transform.parent.GetComponent< WorldObject > ();
+								Debug.Log (worldObject.name);
+
+								if (worldObject) 
+								{
+									Debug.Log ("test 8");
+									//we already know the player has no selected object
+									player.SelectedObject = worldObject;
+									worldObject.SetSelection (true, player.hud.GetPlayingArea ());
+								}
 							}
 						}
 					}
@@ -185,20 +250,25 @@ public class UserInput : MonoBehaviour
 			}
 			else
 			{
-				Debug.Log ("test wrong way"); // testing to see if unit/ squad selection works properly
+				Debug.Log ("test 9"); 
 				if (hitObject && hitPoint != ResourceManager.InvalidPosition) 
 				{
+					Debug.Log ("test 10");
 					if (player.SelectedObject) 
 					{
+						Debug.Log ("test 11");
 						player.SelectedObject.MouseClick (hitObject, hitPoint, player);
 					}
 					else 
 					{
+						Debug.Log ("test 12");
 						if (hitObject.tag != "Ground")
 						{
+							Debug.Log ("test 13");
 							WorldObject worldObject = hitObject.transform.parent.GetComponent< WorldObject > ();
 							if (worldObject) 
 							{
+								Debug.Log ("test 14");
 							//we already know the player has no selected object
 							player.SelectedObject = worldObject;
 							worldObject.SetSelection (true, player.hud.GetPlayingArea ());
@@ -207,7 +277,7 @@ public class UserInput : MonoBehaviour
 					}
 				}
 			}
-		}
+		}*/
 	}
 
 	//if no object is hit, return null

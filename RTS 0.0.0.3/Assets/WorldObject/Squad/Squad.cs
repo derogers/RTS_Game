@@ -42,12 +42,14 @@ public class Squad : WorldObject
 	{
 		//base.MouseClick(holdSquad, hitPoint, player);
 		// not exactly sure what the above line of code does, if you find out comment what it does
-
+		Debug.Log( "1" );
 		//only handle input if owned by a human player and currently selected
 		if(player && player.human && currentlySelected) 
 		{
+			Debug.Log( "2" );
 			if(holdSquad.tag == "Ground" && hitPoint != ResourceManager.InvalidPosition) 
 			{
+				Debug.Log( "3" );
 				float x = hitPoint.x;
 				//makes sure that the unit stays on top of the surface it is on
 				float y = hitPoint.y + player.SelectedObject.transform.position.y;

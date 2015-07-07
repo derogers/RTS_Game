@@ -39,14 +39,13 @@ public class Unit : WorldObject
 	protected override void Start () 
 	{
 		base.Start();
-
+		squad = GameObject.Find("Squad").GetComponent<Squad>(); //Will probably need to change later, but works for now
 		agent = GetComponent<NavMeshAgent>();
 	}
 	
 	protected override void Update () 
 	{
 		base.Update();
-
 		//tells unit to go to target.position
 		agent.SetDestination (target.position);
 		//can be found in WorldObject
@@ -75,7 +74,8 @@ public class Unit : WorldObject
 	// not needed here at all
 	// keeping it right now for reference and debugging proposes
 
-	public override void MouseClick(GameObject hitObject, Vector3 hitPoint, Player controller) 
+	/*
+	 * public override void MouseClick(GameObject hitObject, Vector3 hitPoint, Player controller) 
 	{
 		base.MouseClick(hitObject, hitPoint, controller);
 		//only handle input if owned by a human player and currently selected
@@ -97,5 +97,5 @@ public class Unit : WorldObject
 				//to a specific position calculated by the squadFormationManager
 			}
 		}
-	}
+	}*/
 }

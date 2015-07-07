@@ -60,7 +60,7 @@ public class GameObjectList : MonoBehaviour
 		return null;
 	}
 
-	public GameObject GetSquad(string name) 
+	public GameObject GetSquad(string name)
 	{
 		for(int i = 0; i < squads.Length; i++) 
 		{

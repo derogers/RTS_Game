@@ -69,7 +69,7 @@ namespace RTS
 		{
 			return gameObjectList.GetUnit(name);
 		}
-		
+
 		public static GameObject GetWorldObject(string name) 
 		{
 			return gameObjectList.GetWorldObject(name);
