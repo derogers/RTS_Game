@@ -166,8 +166,15 @@ public class UserInput : MonoBehaviour
 					{
 						Debug.Log( "0" );
 						holdSquad = ResourceManager.GetUnit (player.SelectedObject.name).squad; // fixed it bby sort of
+						if(holdSquad)
+						{
+							Debug.Log (holdSquad);
+						}
 						Debug.Log( "before" );
-						player.SelectedObject.MouseClickSquad(holdSquad, hitPoint, player);//CURRENT PROBLEM, doesnt run the function
+						player.SelectedObject.MouseClickSquad(holdSquad, hitPoint, player);//CURRENT PROBLEM, doesnt run correct function
+						//It is calling MouseClickSquad in WorldObject.cs, which isnt what we want it to do
+						//I think we want it to do the MouseClickSquad function in Squad.cs
+						//Might need to add SelectedSquad, but i doubt it. That would also make things a lot more complicated.
 						Debug.Log( "after" );
 					}
 					//If the player doesnt have a unit selected, proceed as normal
