@@ -139,7 +139,7 @@ public class UserInput : MonoBehaviour
 		MouseHover ();
 	}
 	// if left mouse click
-	// the function needs work done
+	// function needs some fixing up
 	private void LeftMouseClick() 
 	{
 		//If the Mouse is in bounds, actually do something
@@ -151,7 +151,7 @@ public class UserInput : MonoBehaviour
 			// Find where the mouse click was using FindHitPoint function
 			hitPoint = FindHitPoint ();
 
-			Debug.Log( hitObject.name );
+			//Debug.Log( hitObject.name ); // shot out an error message
 
 			//If you hit an object in a valid position
 			if(hitObject && hitPoint != ResourceManager.InvalidPosition) 
@@ -159,29 +159,31 @@ public class UserInput : MonoBehaviour
 				//If you already have something selected
 				if(player.SelectedObject) 
 				{
-					Debug.Log( player.SelectedObject.name );
+					//Debug.Log( player.SelectedObject.name );
 
 					//If the player has a unit selected
 					if(player.SelectedObject.tag == "Unit")
 					{
-						Debug.Log( "0" );
+						//Debug.Log( "0" );
 						holdSquad = ResourceManager.GetUnit (player.SelectedObject.name).squad; // fixed it bby sort of
 						if(holdSquad)
 						{
-							Debug.Log (holdSquad);
+							//Debug.Log (holdSquad);
+							//Debug.Log ("have selected object and tag = unit");
 						}
-						Debug.Log( "before" );
+						//Debug.Log( "before" );
 						player.SelectedObject.MouseClickSquad(holdSquad, hitPoint, player);//CURRENT PROBLEM, doesnt run correct function
+
 						//It is calling MouseClickSquad in WorldObject.cs, which isnt what we want it to do
 						//I think we want it to do the MouseClickSquad function in Squad.cs
 						//Might need to add SelectedSquad, but i doubt it. That would also make things a lot more complicated.
-						Debug.Log( "after" );
+						//Debug.Log( "after" );
 					}
 					//If the player doesnt have a unit selected, proceed as normal
 					//Each class can write an override function for MouseClick
 					else
 					{
-						Debug.Log( "Other Way" );
+						//Debug.Log( "Selected object & non Unit" );
 						player.SelectedObject.MouseClick(hitObject, hitPoint, player);
 					}
 				}

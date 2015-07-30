@@ -6,28 +6,31 @@ namespace RTS{
 	public static class SquadFormationManager 
 	{
 		//calcuate where everyone should stand in a squad
+		//need to make positionArray[3] always line up behind row 1 no matter what direction it is facing (currently has a problem when moving down)
+		//need to make positionArray[4] on be calculated off of [3], will be a lot easier.
 		public static Vector3[] calculateSquadPositions(float seperation, float rotationY, Vector3 destination)
 		{
 			Vector3[] positionArray = new Vector3[6];
 			//first person goes to where the player clicked
-			positionArray [0] = new Vector3 (destination.x,destination.y,destination.z);
+			positionArray[0] = new Vector3 (destination.x,destination.y,destination.z);
 			//If left of known position
-			positionArray [1] = new Vector3 (destination.x - seperation * Mathf.Cos (rotationY), destination.y, destination.z + seperation * Mathf.Sin (rotationY));
+			positionArray[1] = new Vector3 (destination.x - seperation * Mathf.Cos (rotationY), destination.y, destination.z + seperation * Mathf.Sin (rotationY));
 			//if right of known position
-			positionArray [2] = new Vector3 (destination.x + seperation * Mathf.Cos (rotationY), destination.y, destination.z - seperation * Mathf.Sin (rotationY));
+			positionArray[2] = new Vector3 (destination.x + seperation * Mathf.Cos (rotationY), destination.y, destination.z - seperation * Mathf.Sin (rotationY));
 			//if below known position
-			positionArray [3] = new Vector3 (destination.x - seperation * Mathf.Sin (rotationY), destination.y, destination.z - seperation * Mathf.Cos (rotationY));
+			positionArray[3] = new Vector3 (destination.x - seperation * Mathf.Sin (rotationY), destination.y, destination.z - seperation * Mathf.Cos (rotationY));
 			//next 2 are also examples of "if below known position"
-			positionArray [4] = new Vector3 (positionArray [1].x - seperation * Mathf.Sin (rotationY), destination.y, positionArray [1].z - seperation * Mathf.Cos (rotationY));
-			positionArray [5] = new Vector3 (positionArray [2].x - seperation * Mathf.Sin (rotationY), destination.y, positionArray [2].z - seperation * Mathf.Cos (rotationY));
+			positionArray[4] = new Vector3 (positionArray [1].x - seperation * Mathf.Sin (rotationY), destination.y, positionArray [1].z - seperation * Mathf.Cos (rotationY));
+			positionArray[5] = new Vector3 (positionArray [2].x - seperation * Mathf.Sin (rotationY), destination.y, positionArray [2].z - seperation * Mathf.Cos (rotationY));
 			//return the Vector3 we just made im pretty sure
-			return new Vector3[6];
+			return positionArray;
 		}
 		// calcuate what direction the squad should face
 		public static float calculateSquadRotation(Vector3 currentPos, Vector3 destinationPos)
 		{
 			float rotation;
 			// theta = tan^-1( (finalX-currentX) / (finalZ-currentZ) )
+			// added in absolute value of the final-current, not sure if this is better/nessary
 			rotation = Mathf.Atan ((destinationPos.x - currentPos.x) / (destinationPos.z - currentPos.z));
 			return rotation;
 		}
