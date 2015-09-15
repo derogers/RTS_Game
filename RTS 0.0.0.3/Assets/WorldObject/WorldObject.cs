@@ -60,15 +60,12 @@ public class WorldObject : MonoBehaviour
 
 	public virtual void MouseClickSquad(Squad holdSquad, Vector3 hitPoint, Player player) 
 	{
-		Debug.Log ("Herro 1");
 		//only handle input if currently selected
 		if(currentlySelected && holdSquad && holdSquad.tag != "Ground") 
 		{
 			//This is the part that is messed up, is a recursive function that should do something else.....
 			Squad squad = holdSquad;//holdSquad.transform.parent.GetComponent< Squad >(); // currently this value is null when click on the ground
 			squad.MouseClickSquad(holdSquad, hitPoint, player);
-			//Debug.Log (squad);
-			Debug.Log ("Herro 2");
 
 			// this makes is so if you click, it deselects the squad
 			if(squad)
