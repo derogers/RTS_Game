@@ -68,34 +68,4 @@ public class Unit : WorldObject
 			if(hoverObject.tag == "Ground") player.hud.SetCursorState(CursorState.Move);
 		}
 	}
-
-	// tells unit want to do on mouseClick
-	// need to move this function over to squad.cs
-	// not needed here at all
-	// keeping it right now for reference and debugging proposes
-
-	/*
-	 * public override void MouseClick(GameObject hitObject, Vector3 hitPoint, Player controller) 
-	{
-		base.MouseClick(hitObject, hitPoint, controller);
-		//only handle input if owned by a human player and currently selected
-		if(player && player.human && currentlySelected) 
-		{
-			if(hitObject.tag == "Ground" && hitPoint != ResourceManager.InvalidPosition) 
-			{
-				float x = hitPoint.x;
-				//makes sure that the unit stays on top of the surface it is on
-				float y = hitPoint.y + player.SelectedObject.transform.position.y;
-				float z = hitPoint.z;
-				//calculates what direction the squad should face
-				squadRotation = SquadFormationManager.calculateSquadRotation(transform.position, new Vector3(x,y,z));
-				//makes a vector3[] to assign all the units to
-				SquadFormationManager.calculateSquadPositions(seperation,squadRotation, new Vector3(x,y,z));
-				//sets target.position to the Vector3 of the mouse click
-				target.position = new Vector3(x,y,z);
-				//need to change this so that each unit in the squad goes
-				//to a specific position calculated by the squadFormationManager
-			}
-		}
-	}*/
 }

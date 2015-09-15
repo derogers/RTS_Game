@@ -4,17 +4,17 @@ using RTS;
 
 public class Player : MonoBehaviour 
 {
-	//stores the player username
+	// Stores the player username
 	public string username;
 
-	//says if the player is human or not
+	// Says if the player is human or not
 	public bool human;
 	public HUD hud;
-	// stores the WorldObject you click on
+	// Stores the WorldObject you click on
 	public WorldObject SelectedObject { get; set; }
 	public int startPoints;
 	public Color teamColor;
-	// will probably get rid of these values. Might have some sort of points holder for player to spend to build their army
+	// Will probably get rid of these values. Might have some sort of points holder for player to spend to build their army
 	public int startMoney, startMoneyLimit, startPower, startPowerLimit;
 	private Dictionary< ResourceType, int > resources, resourceLimits;
 	
@@ -22,8 +22,8 @@ public class Player : MonoBehaviour
 	void Start () 
 	{
 		hud = GetComponentInChildren< HUD >();
-		//resources are not set up correctly, but we do need them for
-		//creating a custom army using a points system
+		// Resources are not set up correctly, but we do need them for
+		// Creating a custom army using a points system
 		AddStartResourceLimits();
 		AddStartResources();
 	}
@@ -42,8 +42,8 @@ public class Player : MonoBehaviour
 			hud.SetResourceValues(resources, resourceLimits);
 		}
 	}
-	// allows you to add a unit to the player
-	// need to make sure this works with th squad code properly when implemented
+	// Allows you to add a unit to the player
+	// Need to make sure this works with th squad code properly when implemented
 	public void AddUnit(string unitName, Vector3 spawnPoint, Quaternion rotation) 
 	{
 		Debug.Log ("add " + unitName + " to player");

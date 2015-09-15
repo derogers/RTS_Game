@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using RTS;
 
+// Defines how the in-game pause menu will behave
+
 public class PauseMenu : Menu 
 {
 	
@@ -10,21 +12,26 @@ public class PauseMenu : Menu
 	protected override void Start () 
 	{
 		base.Start();
-		//initializes the player
+		// Initializes the player
 		player = transform.root.GetComponent< Player >();
 	}
-	// every frame, check to see if the player presses escape
+
+	// Every frame, check to see if the player presses escape
 	void Update () 
 	{
 		if(Input.GetKeyDown(KeyCode.Escape)) Resume();
 	}
-	// the list of different buttons in the pause menu
-	// can easily add to this list
-	// just add it to the array of strings
-	// put a case for it in the handlebutton function
-	// then write the function
+	/*
+	 * Desplays the list of different buttons in the pause menu
+	 * 
+	 * Can easily add to this list, just:
+	 * 1.	add the name of the button to the array of strings
+	 * 2.	append a case in switch(text) of the HandleButton function
+	 * 3. write the function(s) in the PauseMenu class.
+	*/
 	protected override void SetButtons ()
 	{
+		// buttons is a protected string declared in Menu.cs
 		buttons = new string[] {"Resume", "Exit To Main Menu"};
 	}
 	
@@ -37,11 +44,11 @@ public class PauseMenu : Menu
 		default: break;
 		}
 	}
-	// resumes the game
-	// need to change up the cursor.visible script, it is causing the cursor to not appear when it needs to
+
+	// Resumes the game
 	private void Resume() 
 	{
-		// makes sure the game is running at normal speed
+		// Makes sure the game is running at normal speed
 		Time.timeScale = 1.0f;
 		GetComponent< PauseMenu >().enabled = false;
 		if (player) 
@@ -51,7 +58,8 @@ public class PauseMenu : Menu
 		Cursor.visible = false;
 		ResourceManager.MenuOpen = false;
 	}
-	// if the player clicks the exit to main menu button
+	// If the player clicks the exit to main menu button
+	// There is a bug in the cursor.visible script that makes it invisible if you go back to the main menu
 	private void ReturnToMainMenu() 
 	{
 		Application.LoadLevel("MainMenu");

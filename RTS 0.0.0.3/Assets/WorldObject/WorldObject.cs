@@ -8,13 +8,6 @@ public class WorldObject : MonoBehaviour
 	//might need to add "unmodified" and "modified" most every stat later
 	//like how SM bikers have T4, but have a modified T5 on a bike
 
-	//not sure where to add different unit types
-
-	//not sure where to put different units of the same type
-
-	//Probably need to move some of these stats to Unit.cs
-	//example- speed, strength, toughness, ballisticSkill
-
 	public string objectName = "WorldObject";
 	public Texture2D buildImage;
 	//might need to scrap or combine the variable below becides the audio stuff
@@ -64,28 +57,23 @@ public class WorldObject : MonoBehaviour
 	{
 		//it is up to children with specific actions to determine what to do with each of those actions
 	}
-	/* Below is something Derek made
-	 * It is probably not what he should have made
-	 * Derek is going to try anyways
-	 * Wish Derek the best of luck
-	 * 
-	 * 
-	 */
+
 	public virtual void MouseClickSquad(Squad holdSquad, Vector3 hitPoint, Player player) 
 	{
-		//Debug.Log ("Herro 1");
+		Debug.Log ("Herro 1");
 		//only handle input if currently selected
 		if(currentlySelected && holdSquad && holdSquad.tag != "Ground") 
 		{
+			//This is the part that is messed up, is a recursive function that should do something else.....
 			Squad squad = holdSquad;//holdSquad.transform.parent.GetComponent< Squad >(); // currently this value is null when click on the ground
 			squad.MouseClickSquad(holdSquad, hitPoint, player);
 			//Debug.Log (squad);
-			//Debug.Log ("Herro 2");
+			Debug.Log ("Herro 2");
 
-			//clicked on another selectable object
-			if(squad) 
+			// this makes is so if you click, it deselects the squad
+			if(squad)
 			{
-				ChangeSelection(squad, player);
+				//ChangeSelection(squad, player);
 			}
 		}
 	}
@@ -107,6 +95,7 @@ public class WorldObject : MonoBehaviour
 	private void ChangeSelection(WorldObject worldObject, Player controller) 
 	{
 		//this should be called by the following line, but there is an outside chance it will not
+		// dont know what the above line means, should have explained more, but i probably didnt know what i was saying at the time i wrote it
 		SetSelection(false, playingArea);
 		if(controller.SelectedObject) controller.SelectedObject.SetSelection(false, playingArea);
 		controller.SelectedObject = worldObject;

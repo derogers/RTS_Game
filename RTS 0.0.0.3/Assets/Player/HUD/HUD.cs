@@ -2,40 +2,41 @@
 using System.Collections.Generic;
 using RTS;
 
+// Defines how the HUD (Heads Up Display) will behave
+
 public class HUD : MonoBehaviour 
 {
-	//need to comment the crap out of HUD.cs
-	//need to organize the variables
+	// Public variables
 	public GUISkin resourceSkin, ordersSkin, selectBoxSkin;
 	public Texture2D activeCursor;
 	public Texture2D selectCursor, leftCursor, rightCursor, upCursor, downCursor;
-	public Texture2D[] moveCursors, attackCursors, harvestCursors;
-	public GUISkin mouseCursorSkin;
 	public Texture2D buttonHover, buttonClick;
-	public Texture2D[] resources;
 	public Texture2D buildFrame, buildMask;
+	public Texture2D[] moveCursors, attackCursors, harvestCursors;
+	public Texture2D[] resources;
+	public GUISkin mouseCursorSkin;
 
+	// Private varibles
 	private const int ORDERS_BAR_WIDTH = 150, RESOURCE_BAR_HEIGHT = 40;
 	private const int SELECTION_NAME_HEIGHT = 19;
-	// reference to the player when the HUD is created
+	private const int BUILD_IMAGE_WIDTH = 64, BUILD_IMAGE_HEIGHT = 64;
+	private const int BUILD_IMAGE_PADDING = 8;
+	private const int BUTTON_SPACING = 7;
+	private const int SCROLL_BAR_WIDTH = 22;
+	private const int ICON_WIDTH = 32, ICON_HEIGHT = 32, TEXT_WIDTH = 128, TEXT_HEIGHT = 32;
 	private Player player;
 	private CursorState activeCursorState;
 	private int currentFrame = 0;
 	private WorldObject lastSelection;
 	private float sliderValue;
-	private const int BUILD_IMAGE_WIDTH = 64, BUILD_IMAGE_HEIGHT = 64;
-	private const int BUILD_IMAGE_PADDING = 8;
 	private int buildAreaHeight = 0;
-	private const int BUTTON_SPACING = 7;
-	private const int SCROLL_BAR_WIDTH = 22;
 	private Dictionary< ResourceType, Texture2D > resourceImages;
 	private Dictionary< ResourceType, int > resourceValues, resourceLimits;
-	private const int ICON_WIDTH = 32, ICON_HEIGHT = 32, TEXT_WIDTH = 128, TEXT_HEIGHT = 32;
 
 	// Use this for initialization
 	void Start()
 	{
-		/* tells Unity that we want the root object for the HUD, in this
+		/* Tells Unity that we want the root object for the HUD, in this
 		 * case our player object, and that we then want a reference to the
 		 * Player.cs script belonging to that root object. This allows the
 		 * HUD to talk to the Player that owns it.
@@ -47,8 +48,10 @@ public class HUD : MonoBehaviour
 		resourceValues = new Dictionary< ResourceType, int >();
 		resourceLimits = new Dictionary< ResourceType, int >();
 		resourceImages = new Dictionary< ResourceType, Texture2D >();
-		for(int i = 0; i < resources.Length; i++) {
-			switch(resources[i].name) {
+		for(int i = 0; i < resources.Length; i++) 
+		{
+			switch(resources[i].name) 
+			{
 			case "Money":
 				resourceImages.Add(ResourceType.Money, resources[i]);
 				resourceValues.Add(ResourceType.Money, 0);
@@ -88,8 +91,7 @@ public class HUD : MonoBehaviour
 		GUI.skin = ordersSkin;
 		GUI.BeginGroup(new Rect(Screen.width-ORDERS_BAR_WIDTH-BUILD_IMAGE_WIDTH,RESOURCE_BAR_HEIGHT,ORDERS_BAR_WIDTH+BUILD_IMAGE_WIDTH,Screen.height-RESOURCE_BAR_HEIGHT));
 		GUI.Box(new Rect(BUILD_IMAGE_WIDTH+SCROLL_BAR_WIDTH,0,ORDERS_BAR_WIDTH,Screen.height-RESOURCE_BAR_HEIGHT),"");
-		// the empty string means we do not wish to display any text within
-		// the box we have just drawn.
+		// The empty string means we do not wish to display any text within the box we have just drawn.
 		string selectionName = "";
 
 		if(player.SelectedObject) 
@@ -97,20 +99,20 @@ public class HUD : MonoBehaviour
 			selectionName = player.SelectedObject.objectName;
 			if(player.SelectedObject.IsOwnedBy(player))
 			{
-				//reset slider value if the selected object has changed
+				// Reset slider value if the selected object has changed
 				if(lastSelection && lastSelection != player.SelectedObject) 
 				{
 					sliderValue = 0.0f;
 				}
 
 				DrawActions(player.SelectedObject.GetActions());
-				//store the current selection
+				// Store the current selection
 				lastSelection = player.SelectedObject;
 				Building selectedBuilding = lastSelection.GetComponent<Building>();
 				if(selectedBuilding) 
 				{
 					DrawBuildQueue(selectedBuilding.getBuildQueueValues(), selectedBuilding.getBuildPercentage());
-					//DrawStandardBuildingOptions(selectedBuilding);
+					// DrawStandardBuildingOptions(selectedBuilding);
 				}
 			}
 		}
@@ -138,8 +140,8 @@ public class HUD : MonoBehaviour
 
 	public bool MouseInBounds() 
 	{
-		//Screen coordinates start in the lower-left corner of the screen
-		//not the top-left of the screen like the drawing coordinates do
+		// Screen coordinates start in the lower-left corner of the screen
+		// not the top-left of the screen like the drawing coordinates do
 		Vector3 mousePos = Input.mousePosition;
 		bool insideWidth = mousePos.x >= 0 && mousePos.x <= Screen.width - ORDERS_BAR_WIDTH;
 		bool insideHeight = mousePos.y >= 0 && mousePos.y <= Screen.height - RESOURCE_BAR_HEIGHT;
@@ -172,8 +174,8 @@ public class HUD : MonoBehaviour
 
 	private void UpdateCursorAnimation() 
 	{
-		//sequence animation for cursor (based on more than one image for the cursor)
-		//change once per second, loops through array of images
+		// Sequence animation for cursor (based on more than one image for the cursor)
+		// Change once per second, loops through array of images
 		if(activeCursorState == CursorState.Move) 
 		{
 			currentFrame = (int)Time.time % moveCursors.Length;
@@ -193,10 +195,10 @@ public class HUD : MonoBehaviour
 
 	private Rect GetCursorDrawPosition() 
 	{
-		//set base position for custom cursor image
+		// Set base position for custom cursor image
 		float leftPos = Input.mousePosition.x;
 		float topPos = Screen.height - Input.mousePosition.y; //screen draw coordinates are inverted
-		//adjust position base on the type of cursor being shown
+		// Adjust position base on the type of cursor being shown
 		if (activeCursorState == CursorState.PanRight) 
 		{
 			leftPos = Screen.width - activeCursor.width;
@@ -256,11 +258,11 @@ public class HUD : MonoBehaviour
 		buttons.active.background = buttonClick;
 		GUI.skin.button = buttons;
 		int numActions = actions.Length;
-		//define the area to draw the actions inside
+		// Define the area to draw the actions inside
 		GUI.BeginGroup(new Rect(BUILD_IMAGE_WIDTH, 0, ORDERS_BAR_WIDTH, buildAreaHeight));
-		//draw scroll bar for the list of actions if need be
+		// Draw scroll bar for the list of actions if need be
 		if(numActions >= MaxNumRows(buildAreaHeight)) DrawSlider(buildAreaHeight, numActions / 2.0f);
-		//display possible actions as buttons and handle the button click for each
+		// Display possible actions as buttons and handle the button click for each
 		for(int i = 0; i < numActions; i++) 
 		{
 			int column = i % 2;
@@ -269,7 +271,7 @@ public class HUD : MonoBehaviour
 			Texture2D action = ResourceManager.GetBuildImage(actions[i]);
 			if(action) 
 			{
-				//create the button and handle the click of that button
+				// Create the button and handle the click of that button
 				if(GUI.Button(pos, action)) 
 				{
 					if(player.SelectedObject) player.SelectedObject.PerformAction(actions[i]);
@@ -293,7 +295,7 @@ public class HUD : MonoBehaviour
 	
 	private void DrawSlider(int groupHeight, float numRows) 
 	{
-		//slider goes from 0 to the number of rows that do not fit on screen
+		// Slider goes from 0 to the number of rows that do not fit on screen
 		sliderValue = GUI.VerticalSlider(GetScrollPos(groupHeight), sliderValue, 0.0f, numRows - MaxNumRows(groupHeight));
 	}
 
@@ -329,7 +331,7 @@ public class HUD : MonoBehaviour
 			float height = BUILD_IMAGE_HEIGHT - 2 * BUILD_IMAGE_PADDING;
 			if(i==0) 
 			{
-				//shrink the build mask on the item currently being built to give an idea of progress
+				// Shrink the build mask on the item currently being built to give an idea of progress
 				topPos += height * buildPercentage;
 				height *= (1 - buildPercentage);
 			}

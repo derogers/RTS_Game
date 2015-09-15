@@ -2,6 +2,8 @@
 using System.Collections;
 using RTS;
 
+// The menus class sets up the basic menu structure and basic universal menu functions 
+
 public class Menu : MonoBehaviour 
 {
 	
@@ -23,7 +25,7 @@ public class Menu : MonoBehaviour
 	
 	protected virtual void DrawMenu() 
 	{
-		//default implementation for a menu consisting of a vertical list of buttons
+		// Default implementation for a menu consisting of a vertical list of buttons
 		GUI.skin = mySkin;
 		float menuHeight = GetMenuHeight();
 		
@@ -31,52 +33,63 @@ public class Menu : MonoBehaviour
 		float groupTop = Screen.height / 2 - menuHeight / 2;
 		GUI.BeginGroup(new Rect(groupLeft, groupTop, ResourceManager.MenuWidth, menuHeight));
 		
-		//background box
+		// Creates Background box
 		GUI.Box(new Rect(0, 0, ResourceManager.MenuWidth, menuHeight), "");
-		//header image
+
+		// Header image
 		GUI.DrawTexture(new Rect(ResourceManager.Padding, ResourceManager.Padding, ResourceManager.HeaderWidth, ResourceManager.HeaderHeight), header);
 		
-		//menu buttons
+		// Creates Menu buttons
 		if(buttons != null) 
 		{
 			float leftPos = ResourceManager.MenuWidth / 2 - ResourceManager.ButtonWidth / 2;
 			float topPos = 2 * ResourceManager.Padding + header.height;
-			for(int i = 0; i < buttons.Length; i++) {                if(i > 0) topPos += ResourceManager.ButtonHeight + ResourceManager.Padding;
+			for(int i = 0; i < buttons.Length; i++) 
+			{                if(i > 0) topPos += ResourceManager.ButtonHeight + ResourceManager.Padding;
 				if(GUI.Button(new Rect(leftPos, topPos, ResourceManager.ButtonWidth, ResourceManager.ButtonHeight), buttons[i])) 
 				{
 					HandleButton(buttons[i]);
 				}
 			}
 		}
-		
 		GUI.EndGroup();
 	}
 	
 	protected virtual void SetButtons() 
 	{
-		//a child class needs to set this for buttons to appear
+		// A child class needs to set this for buttons to appear
 	}
 	
 	protected virtual void HandleButton(string text) 
 	{
-		//a child class needs to set this to handle button clicks
+		// A child class needs to set this to handle button clicks
 	}
 	
 	protected virtual float GetMenuHeight() 
 	{
+		// Resets buttonHeight to zero
 		float buttonHeight = 0;
+		// If the vector "buttons" is not empty, multiply the number of elements in the vector "buttons" by the height of a button
 		if (buttons != null) 
 		{
 			buttonHeight = buttons.Length * ResourceManager.ButtonHeight;
 		}
+
+		// Resets paddingHeight to 2 * Padding
 		float paddingHeight = 2 * ResourceManager.Padding;
+		// If vector "buttons" is not empty, add  on (the number of elements in the vector "buttons" * Padding)
+		// So padding Height = (2 * Padding) + (buttons.Length * Padding)
 		if (buttons != null) 
 		{
 			paddingHeight += buttons.Length * ResourceManager.Padding;
 		}
+		// Returns the menu height
+		// the menu height = HeaderHeight + buttonHeight + padding Height
 		return ResourceManager.HeaderHeight + buttonHeight + paddingHeight;
 	}
-	// function to quit out of the game
+
+	// Function to completly quit the game
+	// Doesnt save anything
 	protected void ExitGame() 
 	{
 		Application.Quit();

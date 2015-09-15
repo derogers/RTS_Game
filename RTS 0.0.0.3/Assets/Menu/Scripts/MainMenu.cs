@@ -2,11 +2,21 @@
 using System.Collections;
 using RTS;
 
+// Defines how the main menu of the game will behave
+
 public class MainMenu : Menu 
 {
-	// talks about most of this stuff in the pausemenu.cs
+	/*
+	 * Desplays the list of different buttons in the pause menu
+	 * 
+	 * Can easily add to this list, just:
+	 * 1.	add the name of the button to the array of strings
+	 * 2.	append a case in switch(text) of the HandleButton function
+	 * 3. write the function(s) in the MainMenu class.
+	*/
 	protected override void SetButtons () 
 	{
+		// buttons is a protected string declared in Menu.cs
 		buttons = new string[] {"New Game", "Quit Game"};
 	}
 	
@@ -19,13 +29,15 @@ public class MainMenu : Menu
 		default: break;
 		}
 	}
-	// if the player presses the New Game button
+
+	// If the player presses the "New Game" button
 	private void NewGame() 
 	{
-		// loads the level called "Alpha Level 0.0.1"
+		// Closes the menu
 		ResourceManager.MenuOpen = false;
+		// Loads the level called "Alpha Level 0.0.1"
 		Application.LoadLevel("Alpha Level 0.0.1");
-		//makes sure that the loaded level runs at normal speed
+		// Makes sure that the loaded level runs at normal speed
 		Time.timeScale = 1.0f;
 	}
 }

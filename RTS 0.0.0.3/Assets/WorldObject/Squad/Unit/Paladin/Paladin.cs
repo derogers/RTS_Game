@@ -5,8 +5,6 @@ using RTS;
 public class Paladin : Unit 
 {
 	//Down to the specific unit
-	//Everything in here should be specific to this unit?
-	//Not set up yet
 
 	/*** Game Engine methods, all can be overridden by subclass ***/
 

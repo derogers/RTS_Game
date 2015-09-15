@@ -2,6 +2,8 @@
 using System.Collections;
 using RTS;
 
+// Defines how the user interacts with the game
+
 public class UserInput : MonoBehaviour 
 {
 	private Player player;
@@ -12,13 +14,11 @@ public class UserInput : MonoBehaviour
 	void Start () 
 	{
 		/*
-		 * tells unity to go to the root of the object that this script
+		 * Tells unity to go to the root of the object that this script
 		 * belongs to and then find the player component that we added.
-		 * Now it is possible to interact with the player directly
+		 * now it is possible to interact with the player directly
 		 */
 		player = transform.root.GetComponent<Player>();
-	    
-		// NEED TO INITIALIZE HOLDSQUAD
 	}
 
 	// Update is called once per frame
@@ -33,7 +33,9 @@ public class UserInput : MonoBehaviour
 		}
 	}
 	/*
-	 * function that handles user camra movement.
+	 * Function that handles user camra movement.
+	 * WASD moves the camera Foward, Left, Backward, Right (respectively)
+	 * Mouse scroll moves the camera Up and Down
 	 */
 	private void MoveCamera() 
 	{
@@ -44,7 +46,7 @@ public class UserInput : MonoBehaviour
 		Vector3 movement = new Vector3(0,0,0);
 		bool mouseScroll = false;
 		
-		/* horizontal camera movement
+		/* Horizontal camera movement
 		 * adds movement in the appropriate axis when the mouse is inside
 		 * the region that we defined for movement
 		 */
@@ -61,7 +63,7 @@ public class UserInput : MonoBehaviour
 			mouseScroll = true;
 		}
 		
-		//vertical camera movement
+		// Vertical camera movement
 		if((ypos >= 0 && ypos < ResourceManager.ScrollWidth)|| Input.GetKey (KeyCode.S)) 
 		{
 			movement.z -= ResourceManager.ScrollSpeed;
@@ -75,12 +77,12 @@ public class UserInput : MonoBehaviour
 			mouseScroll = true;
 		}
 		
-		//make sure movement is in the direction the camera is pointing
-		//but ignore the vertical tilt of the camera to get sensible scrolling
+		// Make sure movement is in the direction the camera is pointing
+		// But ignore the vertical tilt of the camera to get sensible scrolling
 		movement = Camera.main.transform.TransformDirection(movement);
 		movement.y = 0;
 		
-		//away from ground movement
+		// Away from ground movement
 		movement.y -= ResourceManager.ScrollSpeed * Input.GetAxis("Mouse ScrollWheel");
 		
 		//calculate desired camera position based on received input
@@ -90,7 +92,7 @@ public class UserInput : MonoBehaviour
 		destination.y += movement.y;
 		destination.z += movement.z;
 		
-		//limit away from ground movement to be between a minimum and maximum distance
+		// Limits the distance the camera can be from the ground be between a minimum and maximum distance
 		if(destination.y > ResourceManager.MaxCameraHeight) 
 		{
 			destination.y = ResourceManager.MaxCameraHeight;
@@ -100,7 +102,7 @@ public class UserInput : MonoBehaviour
 			destination.y = ResourceManager.MinCameraHeight;
 		}
 		
-		//if a change in position is detected perform the necessary update
+		// If a change in position is detected perform the necessary update
 		if(destination != origin) 
 		{
 			Camera.main.transform.position = Vector3.MoveTowards(origin, destination, Time.deltaTime * ResourceManager.ScrollSpeed);
@@ -111,35 +113,34 @@ public class UserInput : MonoBehaviour
 			player.hud.SetCursorState(CursorState.Select);
 		}
 	}
-	//used to totate the camera
+	// Used to totate the camera
 	private void RotateCamera() 
 	{
 		Vector3 origin = Camera.main.transform.eulerAngles;
 		Vector3 destination = origin;
 		
-		//detect rotation amount if ALT is being held and the Right mouse button is down
+		// Detect rotation amount if ALT is being held and the Right mouse button is down
 		if(((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) && Input.GetMouseButton(1))||(Input.GetKey(KeyCode.Mouse2))) 
 		{
 			/*destination.x -= Input.GetAxis("Mouse Y") * ResourceManager.RotateAmount;*/
 			destination.y += Input.GetAxis("Mouse X") * ResourceManager.RotateAmount;
 		}
 		
-		//if a change in position is detected perform the necessary update
+		// If a change in position is detected perform the necessary update
 		if(destination != origin) 
 		{
 			Camera.main.transform.eulerAngles = Vector3.MoveTowards(origin, destination, Time.deltaTime * ResourceManager.RotateSpeed);
 		}
 	}
 
-	//check to see if the left or right mouse is clicked
+	// Check to see if the left or right mouse is clicked
 	private void MouseActivity() 
 	{
 		if(Input.GetMouseButtonDown(0)) LeftMouseClick();
 		else if(Input.GetMouseButtonDown(1)) RightMouseClick();
 		MouseHover ();
 	}
-	// if left mouse click
-	// function needs some fixing up
+	// If left mouse click
 	private void LeftMouseClick() 
 	{
 		//If the Mouse is in bounds, actually do something
@@ -166,17 +167,15 @@ public class UserInput : MonoBehaviour
 					{
 						//Debug.Log( "0" );
 						holdSquad = ResourceManager.GetUnit (player.SelectedObject.name).squad; // fixed it bby sort of
+						// used for debuging purposes
 						if(holdSquad)
 						{
 							//Debug.Log (holdSquad);
 							//Debug.Log ("have selected object and tag = unit");
 						}
 						//Debug.Log( "before" );
-						player.SelectedObject.MouseClickSquad(holdSquad, hitPoint, player);//CURRENT PROBLEM, doesnt run correct function
+						player.SelectedObject.MouseClickSquad(holdSquad, hitPoint, player);
 
-						//It is calling MouseClickSquad in WorldObject.cs, which isnt what we want it to do
-						//I think we want it to do the MouseClickSquad function in Squad.cs
-						//Might need to add SelectedSquad, but i doubt it. That would also make things a lot more complicated.
 						//Debug.Log( "after" );
 					}
 					//If the player doesnt have a unit selected, proceed as normal
@@ -188,8 +187,9 @@ public class UserInput : MonoBehaviour
 					}
 				}
 				//If you dont have anything selected and you didnt click on the ground
-				else if(hitObject.name != "Ground") 
+				else if(hitObject.tag != "Ground") 
 				{
+					Debug.Log (hitObject);
 					//Set worldObject to whatever you clicked on
 					WorldObject worldObject = hitObject.transform.parent.GetComponent<WorldObject>();
 					//If you actually clicked on something
@@ -204,94 +204,11 @@ public class UserInput : MonoBehaviour
 				}
 			}
 		}
-
-
-		//Keeping around Just in Case, although this was a complete mess that didnt come close to working
-		/*
-		Debug.Log ("test 1");
-		if (player.hud.MouseInBounds ()) 
-		{
-			//if the mouse click is in bounds
-			GameObject hitObject = FindHitObject ();  //assigns hit object by calling the FindHitObject funcion
-			Debug.Log (hitObject.name);
-			hitPoint = FindHitPoint (); //set vector3 hitpoint by calling the FindHitPoint function
-			Debug.Log ("test 2");
-
-			// This causes an error if you click the ground b/c ground doesnt have a parent
-			if(hitObject.tag != "Ground")
-			{
-				if (hitObject.transform.parent.tag == "Unit") // if the hit object is a unit, need to make sure it is calling the unit and not a child of the unit
-				{
-					Debug.Log ("test 3");
-					holdSquad = ResourceManager.GetUnit (hitObject.transform.parent.name).squad; // fixed it bby
-
-					if (hitObject && hitPoint != ResourceManager.InvalidPosition) 
-					{
-						Debug.Log ("test 4");
-						if (player.SelectedObject)
-						{
-							//not exactly sure what this does, if you figure out change this comment to the answer
-							// MAKE A FUNCTION OVVERIDE FOR MOUSE CLICK
-							// made another function called MouseClickSquad that can be found in Squad.cs
-							Debug.Log ("test 5");
-							player.SelectedObject.MouseClick (hitObject, hitPoint, player);
-						}
-						else
-						{
-							Debug.Log ("test 6");
-							if (hitObject.tag != "Ground")
-							{
-								Debug.Log ("test 7");
-								WorldObject worldObject = hitObject.transform.parent.GetComponent< WorldObject > ();
-								Debug.Log (worldObject.name);
-
-								if (worldObject) 
-								{
-									Debug.Log ("test 8");
-									//we already know the player has no selected object
-									player.SelectedObject = worldObject;
-									worldObject.SetSelection (true, player.hud.GetPlayingArea ());
-								}
-							}
-						}
-					}
-				}
-			}
-			else
-			{
-				Debug.Log ("test 9"); 
-				if (hitObject && hitPoint != ResourceManager.InvalidPosition) 
-				{
-					Debug.Log ("test 10");
-					if (player.SelectedObject) 
-					{
-						Debug.Log ("test 11");
-						player.SelectedObject.MouseClick (hitObject, hitPoint, player);
-					}
-					else 
-					{
-						Debug.Log ("test 12");
-						if (hitObject.tag != "Ground")
-						{
-							Debug.Log ("test 13");
-							WorldObject worldObject = hitObject.transform.parent.GetComponent< WorldObject > ();
-							if (worldObject) 
-							{
-								Debug.Log ("test 14");
-							//we already know the player has no selected object
-							player.SelectedObject = worldObject;
-							worldObject.SetSelection (true, player.hud.GetPlayingArea ());
-							}
-						}
-					}
-				}
-			}
-		}*/
 	}
 
-	//if no object is hit, return null
-	//if object is hit, return that object
-	// need this to not return the capsule, but return the unit, currently doesnt work properly
+	// If no object is hit, return null
+	// If object is hit, return that object
+	// Need this to not return the capsule, but return the unit, currently doesnt work properly
 	private GameObject FindHitObject() 
 	{
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -299,8 +216,9 @@ public class UserInput : MonoBehaviour
 		if(Physics.Raycast(ray, out hit)) return hit.collider.gameObject; // might need to change the return value
 		return null;
 	}
-	//if the raycast doesnt hit anything, return invalidPosition
-	//if the raycast hits something, return the point it hit
+
+	// If the raycast doesnt hit anything, return invalidPosition
+	// If the raycast hits something, return the point it hit
 	private Vector3 FindHitPoint() 
 	{
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -308,7 +226,8 @@ public class UserInput : MonoBehaviour
 		if(Physics.Raycast(ray, out hit)) return hit.point;
 		return ResourceManager.InvalidPosition;
 	}
-	//decides what to do when there is a right mouse click
+
+	// Decides what to do when there is a right mouse click
 	private void RightMouseClick() 
 	{
 		if(player.hud.MouseInBounds() && !Input.GetKey(KeyCode.LeftAlt) && player.SelectedObject) 
@@ -317,7 +236,8 @@ public class UserInput : MonoBehaviour
 			player.SelectedObject = null;
 		}
 	}
-	//decides what to do
+
+	// Decides what to do
 	private void MouseHover() 
 	{
 		if(player.hud.MouseInBounds()) 
@@ -339,7 +259,8 @@ public class UserInput : MonoBehaviour
 			}
 		}
 	}
-	//pause menu function
+
+	// Pause menu function
 	private void OpenPauseMenu() 
 	{
 		Time.timeScale = 0.0f;
